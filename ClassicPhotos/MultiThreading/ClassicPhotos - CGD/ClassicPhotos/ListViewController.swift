@@ -64,12 +64,7 @@ class ListViewController: UITableViewController {
     activityIndicatorView.center = cell.imageView!.center
     activityIndicatorView.startAnimating()
     
-    if let image = cache.object(forKey: self.photos[rowKey] as! NSString) as? UIImage {
-        cell.imageView?.image = image
-        cell.textLabel?.text = rowKey
-        return cell
-    }
-    
+
     DispatchQueue.global(qos: .userInitiated).async {
         guard let imageURL = URL(string: self.photos[rowKey] as! String),
             let imageData = try? Data(contentsOf: imageURL) else {

@@ -27,6 +27,7 @@ private let reuseIdentifier = "photoCell"
 private let backgroundImageOpacity: CGFloat = 0.1
 
 class PhotoCollectionViewController: UICollectionViewController {
+    
   // MARK: - Lifecycle
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -107,7 +108,7 @@ private extension PhotoCollectionViewController {
   }
   
   func downloadImageAssets() {
-    PhotoManager.sharedManager.downloadPhotosWithCompletion() {
+    PhotoManager.sharedManager.downloadPhotosWithCompletion2() {
       error in
       // This completion block currently executes at the wrong time
       let message = error?.localizedDescription ?? "The images have finished downloading"

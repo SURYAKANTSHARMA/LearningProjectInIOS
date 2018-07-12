@@ -65,24 +65,60 @@ class PhotoManager {
   }
   
   func downloadPhotosWithCompletion(_ completion: BatchPhotoDownloadingCompletionClosure?) {
-    var storedError: NSError?
-    for address in [overlyAttachedGirlfriendURLString,
-                    successKidURLString,
-                    lotsOfFacesURLString] {
-                      let url = URL(string: address)
-                      let photo = DownloadPhoto(url: url!) {
-                        _, error in
-                        if error != nil {
-                          storedError = error
-                        }
-                      }
-                      PhotoManager.sharedManager.addPhoto(photo)
+    // make a new GCD Queue
+    DispatchQueue.global(qos: .userInitiated).async {
+        var storedError: NSError?
+        let downloadsGroup = DispatchGroup()
+        for address in [overlyAttachedGirlfriendURLString,
+                        successKidURLString,
+                        lotsOfFacesURLString] {
+                            let url = URL(string: address)
+                            downloadsGroup.enter()
+                            let photo = DownloadPhoto(url: url!) {
+                                _, error in
+                                if error != nil {
+                                    storedError = error
+                                }
+                                downloadsGroup.leave()
+                            }
+                            PhotoManager.sharedManager.addPhoto(photo)
+        }
+        
+        downloadsGroup.wait()
+        DispatchQueue.main.async {
+            completion?(storedError)
+        }
+        
     }
-    
-    completion?(storedError)
   }
+    
+    func downloadPhotosWithCompletion2(_ completion: BatchPhotoDownloadingCompletionClosure?) {
+        // make a new GCD Queue
+            var storedError: NSError?
+            let downloadsGroup = DispatchGroup()
+            for address in [overlyAttachedGirlfriendURLString,
+                            successKidURLString,
+                            lotsOfFacesURLString] {
+                                let url = URL(string: address)
+                                downloadsGroup.enter()
+                                let photo = DownloadPhoto(url: url!) {
+                                    _, error in
+                                    if error != nil {
+                                        storedError = error
+                                    }
+                                    downloadsGroup.leave()
+                                }
+                                PhotoManager.sharedManager.addPhoto(photo)
+            }
+            
+            downloadsGroup.notify(queue: DispatchQueue.main) {
+                completion?(storedError)
+            }
+        
+    }
   
   fileprivate func postContentAddedNotification() {
     NotificationCenter.default.post(name: Notification.Name(rawValue: photoManagerContentAddedNotification), object: nil)
   }
+    
 }
