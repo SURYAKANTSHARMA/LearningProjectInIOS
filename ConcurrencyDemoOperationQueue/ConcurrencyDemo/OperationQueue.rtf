@@ -1,0 +1,81 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf400
+{\fonttbl\f0\froman\fcharset0 Times-Roman;\f1\fmodern\fcharset0 CourierNewPSMT;\f2\fnil\fcharset0 LucidaGrande;
+}
+{\colortbl;\red255\green255\blue255;\red19\green20\blue21;\red252\green252\blue252;\red154\green154\blue154;
+\red246\green246\blue246;\red234\green234\blue234;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c9804\c10196\c10588\c80000;\cssrgb\c99216\c99216\c99216;\cssrgb\c66667\c66667\c66667;
+\cssrgb\c97255\c97255\c97255;\cssrgb\c93333\c93333\c93333;\cssrgb\c0\c0\c0;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{circle\}}{\leveltext\leveltemplateid102\'01\uc0\u9702 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sl720\sa700\partightenfactor0
+
+\f0\fs34 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Unlike GCD, they don\'92t conform to the First-In-First-Out order. Here are how operation queues are different from dispatch queues:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl720\sa400\partightenfactor0
+\ls1\ilvl0\cf2 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1.	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Don\'92t follow FIFO: in operation queues, you can set an execution priority for operations and you can add dependencies between operations which means you can define that some operations will only be executed after the completion of other operations. This is why they don\'92t follow First-In-First-Out.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2.	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 By default, they operate concurrently: while you can\'92t change its type to serial queues, there is still a workaround to execute tasks in operation queues in sequence by using dependencies between operations.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl720\partightenfactor0
+\ls1\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3.	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Operation queues are instances of class\'a0
+\i NSOperationQueue
+\i0 \'a0and its tasks are encapsulated in instances of\'a0
+\i NSOperation
+\i0 .\cb1 \
+	\
+\
+\pard\pardeftab720\sl400\partightenfactor0
+\cf2 \cb3 You can simply think of NSOperation as a single unit of work.\
+\
+\pard\pardeftab720\sl720\sa700\partightenfactor0
+\cf2 \'a0advantages of NSOperation?\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl720\sa400\partightenfactor0
+\ls2\ilvl0\cf2 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1.	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 First, they support dependencies through the method addDependency(op: NSOperation) in the NSOperation class. When you need to start an operation that depends on the execution of the other, you will want to use NSOperation.\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 2.	\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Secondly, you can change the execution priority by setting the property\'a0
+\i queuePriority
+\i0 with one of these values:\cb1 \uc0\u8232 
+\f1\fs32 \
+
+\itap1\trowd \taflags1 \trgaph108\trleft-108 \trbrdrt\brdrnil \trbrdrl\brdrnil \trbrdrt\brdrnil \trbrdrr\brdrnil 
+\clvertalt \clcbpat6 \clwWidth412\clftsWidth3 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadl0 \clpadr0 \gaph\cellx4320
+\clvertalt \clshdrawnil \clwWidth13428\clftsWidth3 \clbrdrt\brdrnil \clbrdrl\brdrnil \clbrdrb\brdrnil \clbrdrr\brdrnil \clpadl0 \clpadr0 \gaph\cellx8640
+\pard\intbl\itap1\tx220\tx720\pardeftab720\li720\fi-720\sl440\qr\partightenfactor0
+\ls2\ilvl0\cf4 \cb5 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 	
+\fs24 \cf7 \cb1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec7 \cell 
+\pard\intbl\itap1\tx220\tx720\pardeftab720\li720\fi-720\sl440\partightenfactor0
+\ls2\ilvl0\cf7 \cell 
+\pard\intbl\itap1\tx220\tx720\pardeftab720\li720\fi-720\sl440\partightenfactor0
+\ls2\ilvl0
+\f0\fs34 \cf2 \strokec2 \cell 
+\pard\intbl\itap1\cell \lastrow\row
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl720\sa400\partightenfactor0
+\ls2\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3.	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 You can cancel a particular operation or all operations for any given queue. The operation can be cancelled after being added to the queue. Cancellation is done by calling method cancel() in the NSOperation class. When you cancel any operation, we have three scenarios that one of them will happen:\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl720\sa400\partightenfactor0
+\ls2\ilvl1\cf2 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	
+\f2 \uc0\u9702 
+\f0 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Your operation is already finished. In that case, the cancel method has no effect.\cb1 \
+\ls2\ilvl1\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	
+\f2 \uc0\u9702 
+\f0 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Your operation is already being executing. In that case, system will NOT force your operation code to stop but instead, cancelled property will be set to true.\cb1 \
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl720\partightenfactor0
+\ls2\ilvl1\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	
+\f2 \uc0\u9702 
+\f0 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Your operation is still in the queue waiting to be executed. In that case, your operation will not be executed.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl720\sa400\partightenfactor0
+\ls2\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4.	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 NSOperation has 3 helpful boolean properties which are finished, cancelled, and ready. finished will be set to true once operation execution is done. cancelled is set to true once the operation has been cancelled. ready is set to true once the operation is about to be executed now.\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl720\partightenfactor0
+\ls2\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	5.	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Any NSOperation has an option to set completion block to be called once the task being finished. The block will be called once the property finished is set to true in NSOperation.\cb1 \
+}

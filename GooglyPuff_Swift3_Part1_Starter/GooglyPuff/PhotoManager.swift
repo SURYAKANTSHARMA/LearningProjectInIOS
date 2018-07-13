@@ -77,7 +77,7 @@ class PhotoManager {
                             let photo = DownloadPhoto(url: url!) {
                                 _, error in
                                 if error != nil {
-                                    storedError = error
+                                  storedError = error
                                 }
                                 downloadsGroup.leave()
                             }
@@ -117,6 +117,50 @@ class PhotoManager {
         
     }
   
+    // cancel Demo with dispatchWorkItem
+    func downloadPhotosWithCompletion3(_ completion: BatchPhotoDownloadingCompletionClosure?) {
+        // make a new GCD Queue
+        var storedError: NSError?
+        let downloadGroup = DispatchGroup()
+        var addresses = [overlyAttachedGirlfriendURLString,
+                         successKidURLString,
+                         lotsOfFacesURLString]
+        addresses += addresses + addresses // 1
+        var blocks :[DispatchWorkItem] = []
+        
+        for i in 0 ..< addresses.count {
+            downloadGroup.enter()
+            let block = DispatchWorkItem(flags: .inheritQoS) { // 3
+                let index = Int(i)
+                let address = addresses[index]
+                let url = URL(string: address)
+                let photo = DownloadPhoto(url: url!) {
+                    _, error in
+                    if error != nil {
+                        storedError = error
+                    }
+                    downloadGroup.leave()
+                }
+                PhotoManager.sharedManager.addPhoto(photo)
+            }
+            blocks.append(block)
+            DispatchQueue.main.async(execute: block) // 4
+        }
+       
+        for block in blocks[3 ..< blocks.count] { // 5
+            let cancel = arc4random_uniform(2) // 6
+            if cancel == 1 {
+                block.cancel() // 7
+                downloadGroup.leave() // 8
+            }
+        }
+        
+        downloadGroup.notify(queue: DispatchQueue.main) {
+            completion?(storedError)
+        }
+        
+    }
+    
   fileprivate func postContentAddedNotification() {
     NotificationCenter.default.post(name: Notification.Name(rawValue: photoManagerContentAddedNotification), object: nil)
   }

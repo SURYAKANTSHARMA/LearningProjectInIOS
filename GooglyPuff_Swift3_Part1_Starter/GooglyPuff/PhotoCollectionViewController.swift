@@ -25,13 +25,27 @@ import Photos
 
 private let reuseIdentifier = "photoCell"
 private let backgroundImageOpacity: CGFloat = 0.1
+#if DEBUG // 1
+var signal: DispatchSourceSignal? // 2
+private let setupSignalHandlerFor = { (_ object: AnyObject) -> Void in // 3
+    let queue = DispatchQueue.main
+    signal =
+        DispatchSource.makeSignalSource(signal: Int32(SIGSTOP), queue: queue) // 4
+    signal?.setEventHandler { // 5
+        print("Hi, I am: \(object.description!)")
+    }
+    signal?.resume() // 6
+}
+#endif
 
 class PhotoCollectionViewController: UICollectionViewController {
     
   // MARK: - Lifecycle
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    #if DEBUG
+    _ = setupSignalHandlerFor(self)
+    #endif
     // Background image setup
     let backgroundImageView = UIImageView(image: UIImage(named:"background"))
     backgroundImageView.alpha = backgroundImageOpacity
