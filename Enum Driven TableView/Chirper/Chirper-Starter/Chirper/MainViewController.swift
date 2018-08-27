@@ -1,15 +1,15 @@
 /// Copyright (c) 2018 Razeware LLC
-/// 
+///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
 /// distribute, sublicense, create a derivative work, and/or sell copies of the
 /// Software in any work that is designed, intended, or marketed for pedagogical or
@@ -17,7 +17,7 @@
 /// or information technology.  Permission for such use, copying, modification,
 /// merger, publication, distribution, sublicensing, creation of derivative works,
 /// or sale is expressly withheld.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,22 +31,21 @@ import UIKit
 enum State {
   
   case loading
+  case paging([Recording], next: Int)
   case populated([Recording])
   case empty
   case error(Error)
-  case paging([Recording], next: Int)
-
+  
   var currentRecordings: [Recording] {
     switch self {
-    case .populated(let recordings):
-      return recordings
     case .paging(let recordings, _):
+      return recordings
+    case .populated(let recordings):
       return recordings
     default:
       return []
     }
   }
-  
 }
 
 class MainViewController: UIViewController {
@@ -62,14 +61,12 @@ class MainViewController: UIViewController {
   let networkingService = NetworkingService()
   let darkGreen = UIColor(red: 11/255, green: 86/255, blue: 14/255, alpha: 1)
   
-
   var state = State.loading {
     didSet {
       setFooterView()
       tableView.reloadData()
     }
   }
-
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -93,56 +90,58 @@ class MainViewController: UIViewController {
     loadPage(1)
   }
   
-  func setFooterView() {
-    switch state {
-    case .loading:
-      tableView.tableFooterView = loadingView
-    case .error(let error):
-      errorLabel.text = error.localizedDescription
-      tableView.tableFooterView = errorView
-    case .empty:
-      tableView.tableFooterView = emptyView
-    case .populated:
-      tableView.tableFooterView = nil
-    case .paging:
-      tableView.tableFooterView = loadingView
-    }
-  }
-
-    func update(response: RecordingsResult) {
-        if let error = response.error {
-            state = .error(error)
-            return
-        }
-      
-       guard let newRecordings = response.recordings,
-        !newRecordings.isEmpty else {
-          state = .empty
-          return
-      }
-      
-      var allRecordings = state.currentRecordings
-      allRecordings.append(contentsOf: newRecordings)
-
-      if response.hasMorePages {
-        state = .paging(newRecordings, next: response.nextPage)
-      } else {
-        state = .populated(newRecordings)
-      }
-   
-    }
-
   func loadPage(_ page: Int) {
     let query = searchController.searchBar.text
     networkingService.fetchRecordings(matching: query, page: page) { [weak self] response in
+      
       guard let `self` = self else {
         return
       }
+      
       self.searchController.searchBar.endEditing(true)
       self.update(response: response)
     }
   }
+  
+  func update(response: RecordingsResult) {
+    if let error = response.error {
+      state = .error(error)
+      return
+    }
+    
+    guard let newRecordings = response.recordings,
+      !newRecordings.isEmpty else {
+        state = .empty
+        return
+    }
+    
+    var allRecordings = state.currentRecordings
+    allRecordings.append(contentsOf: newRecordings)
+    
+    if response.hasMorePages {
+      state = .paging(allRecordings, next: response.nextPage)
+    } else {
+      state = .populated(allRecordings)
+    }
+  }
+  
   // MARK: - View Configuration
+  
+  func setFooterView() {
+    switch state {
+    case .error(let error):
+      errorLabel.text = error.localizedDescription
+      tableView.tableFooterView = errorView
+    case .loading:
+      tableView.tableFooterView = loadingView
+    case .paging:
+      tableView.tableFooterView = loadingView
+    case .empty:
+      tableView.tableFooterView = emptyView
+    case .populated:
+      tableView.tableFooterView = nil
+    }
+  }
   
   func prepareSearchBar() {
     searchController.obscuresBackgroundDuringPresentation = false
@@ -199,8 +198,7 @@ extension MainViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView,
                  numberOfRowsInSection section: Int) -> Int {
-     return state.currentRecordings.count
-
+    return state.currentRecordings.count
   }
   
   func tableView(_ tableView: UITableView,
@@ -214,7 +212,7 @@ extension MainViewController: UITableViewDataSource {
     
     cell.load(recording: state.currentRecordings[indexPath.row])
     
-    if  case .paging(_, let nextPage) = state,
+    if case .paging(_, let nextPage) = state,
       indexPath.row == state.currentRecordings.count - 1 {
       loadPage(nextPage)
     }
