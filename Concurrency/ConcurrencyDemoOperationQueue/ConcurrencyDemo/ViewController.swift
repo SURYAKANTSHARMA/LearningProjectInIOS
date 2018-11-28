@@ -92,6 +92,8 @@ class ViewController: UIViewController {
         blockOperation1.completionBlock = {
             print("First Image is end up with downloading cancelled\(blockOperation1.isCancelled)")
         }
+        
+    
         let blockOperation2 = BlockOperation {
             let img2 = Downloader.downloadImageWithURL(url: imageURLs[1])
             OperationQueue.main.addOperation {
